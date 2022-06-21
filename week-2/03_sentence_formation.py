@@ -2,16 +2,19 @@
 import random
 
 def sentence_generator(num):
-    subjects = ["Tope", "Tutor", "Goke", "Awwal", "Tolu", "Faith", "Kunle", "Jide", "Ope", "Gloria"]
-    objects = ["house", "hospital", "office", "school", "market"]
-    verbs = ["running", "going", "walking", "driving", "crawling"]
-    unique = set()
-
+    subjects = ["Tope", "Anas", "Goke", "Awwal", "Tolu"]
+    objects = ["food", "water", "ball", "car", "glass"]
+    verbs = ["eats", "kicks", "drinks", "uses", "drives"]
+    sentences = set()
+    
     for i in range(num):
-        single_sentence = f"{random.choice(subjects)} is {random.choice(verbs)} to the {random.choice(objects)}"
-        unique.add(single_sentence)
-    unique_list = list(unique)
-    for j in range(len(unique_list)):
-        print(unique_list[j])
+        single_sentence = f"{random.choice(subjects)} {random.choice(verbs)} {random.choice(objects)}"
+        sentences.add(single_sentence)
+        if len(sentences) != len(subjects) * len(verbs) * len(objects):
+            print(single_sentence)
+        else:
+            print("There are no more unique random sentences to generate.")
+            break
+    print(len(sentences))
 
-sentence_generator(int(input("Enter the number of sentence you would like to generate: ")))
+sentence_generator(1000)
