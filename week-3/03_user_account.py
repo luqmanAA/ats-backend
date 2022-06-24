@@ -115,7 +115,7 @@ def signup():
 def change_password(firstname, lastname, username, password):
     old_password = input("Enter your old password: ")
     while old_password == '' or old_password != password or len(old_password) <8:
-        old_password = input("Password must contain at least 8 characters, please try again: ")
+        old_password = input("Password incorrect, please try again: ")
     
     new_password = input("Enter your new password: ")
     while new_password == '' or len(new_password) <8:
