@@ -185,7 +185,7 @@ def main():
         print("Invalid option, try again")
         return main()
 
-# main()
+main()
 
-df = pd.read_csv(file_path)
-print(df.head(5))
+# df = pd.read_csv(file_path)
+# print(df.head(5))
