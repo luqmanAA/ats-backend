@@ -38,7 +38,7 @@ class User(Transaction):
     def __init__(self, firstname = None, lastname = None, username = None, password = None) -> None:
         super().__init__()
         
-        self.firstname = firstname
+        self.__firstname = firstname
         self.lastname = lastname
         self.username = username
         self.password = password
@@ -48,8 +48,8 @@ class User(Transaction):
         return self.__firstname
 
     @firstname.setter
-    def firstname(self, fname):
-        if fname == None:
+    def set_firstname(self, fname):
+        if not fname:
             raise ValueError('Firstname cannot be empty')
         self.__firstname = fname
 
@@ -59,7 +59,7 @@ class User(Transaction):
 
     @lastname.setter
     def lastname(self, lname):
-        if lname == None:
+        if not lname:
             raise ValueError('Lastname cannot be empty')
         self.__lastname = lname
 
@@ -69,7 +69,7 @@ class User(Transaction):
 
     @username.setter
     def username(self, uname):
-        if uname == None:
+        if not uname:
             raise ValueError('Username cannot be empty')
         self.__username = uname
 
@@ -79,7 +79,7 @@ class User(Transaction):
 
     @password.setter
     def password(self, psword):
-        if psword == None:
+        if not psword:
             raise ValueError('Password cannot be empty')
         self.__password = psword
 
@@ -90,23 +90,23 @@ class User(Transaction):
 if __name__ == '__main__':
 
     #1 Create user 1
-    user1 = User("Lukman", "Abisoye", "luqman", 123456)
-
+    user1 = User (lastname="Abisoye", username="luqman", password=123456)
+    print(user1.firstname)
     #Create user 2
-    user2 = User("Adewale", "Ade", "adeola", 123456)
+    # user2 = User("Adewale", "Ade", "adeola", 123456)
 
 
     #2 delete user 2
     # del(user2)
 
     #3 Fund wallet of user 1
-    user1.fund_wallet(200)
-    user1.fund_wallet(100)
-    user1.fund_wallet(400)
-    user1.fund_wallet(50)
+    # user1.fund_wallet(200)
+    # user1.fund_wallet(100)
+    # user1.fund_wallet(400)
+    # user1.fund_wallet(50)
 
 
-    #4 Transaction log
-    user1.log_transaction()
+    # #4 Transaction log
+    # user1.log_transaction()
 
     
