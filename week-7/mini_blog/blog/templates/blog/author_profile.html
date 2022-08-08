@@ -1,0 +1,64 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>My Profile</h1>
+    {% if author_profile.profile_image %}
+    <div>
+        <img src="{{author_profile.profile_image.url}}" class="author_profile-img" width='200px'>
+    </div>
+    {% endif %}
+    <div>
+        <h3>{{ author_profile }}</h3>
+    </div>
+    <div>
+        <h5>Bio</h5>
+        <p>{{ author_profile.bio }}</p>
+        <a href ="{% url 'author-update' author_profile.slug %}">Edit Profile</a>
+    </div>
+
+    <div style="margin-top:50px">
+        <h4>My Posts</h4>
+
+        
+        {% for post in author_profile.author_posts.all|dictsortreversed:'post_date' %}
+
+        <div class='jumbotron'>
+            <h3 class='post-title'><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+            <p> {{post.get_published_date}}
+            </p>
+            <p>{{ post.get_post_excerpt }} <a href="{{ post.get_absolute_url }}">Read more</a></p>
+            
+            <form method='post' action="{% url 'delete-restore-post' post.slug %}">
+                {% csrf_token %}
+                <input type='submit' value='Trash Post'/>
+            </form>
+        </div>
+        {% empty %}
+        <div class='jumbotron'>
+            <h4>No active posts</a></h4>
+        </div>
+        {% endfor %}
+
+        <h5>Deleted Posts</h5>
+        {% for post in deleted_post %}
+        <div class='jumbotron'>
+            <h3 class='post-title'><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+            <p>By 
+                <a href='{% url "author-detail" post.author.id %}'>
+                {{ post.author }}</a> / {{post.get_published_date}}
+            </p>
+            <p>{{ post.get_post_excerpt }} <a href="{{ post.get_absolute_url }}">Read more</a></p>
+            <form method='post' action="{% url 'delete-restore-post' post.slug %}">
+                {% csrf_token %}
+                <input type='submit' value='Restore Post'/>
+            </form>
+        </div>
+
+        {% empty %}
+        <div class='jumbotron'>
+            <h4>Trash is empty</a></h4>
+        </div>
+        {% endfor %}  
+            
+    </div>
+{% endblock %}

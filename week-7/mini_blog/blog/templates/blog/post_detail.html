@@ -1,0 +1,132 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ post.title }}</h1>
+
+  <p><strong>Post date</strong> {{ post.get_published_date }}</p> <!-- author detail link not yet defined -->
+  <p><strong>Author:</strong> 
+    <a href="{% if request.user.id == post.author.id %} 
+    {% url 'author-profile' post.author.username %}
+    {% else %}
+    {% url 'author-detail' post.author.id %}
+    {% endif %}">
+      {{post.author}}
+    </a>
+  </p>
+  {% if post.featured_image %}
+  <img src="{{ post.featured_image.url }} " alt="featured image" class="featured-image">
+  {%endif%}
+  <p><strong>Description:</strong></p>
+  <p>{{ post.content }}</p>
+
+
+
+  <div  style="margin-top:20px">
+    <h4>Comments</h4>
+
+      <hr >
+
+      <div class='comment-section'>
+        {% for comment in comments%}
+        <div class='comment-box'>
+          <div class='comment-meta'>
+            <p>{{ comment.comment_author }}</p>
+            <p>{{ comment.comment_time }}</p>
+          </div>
+          <p>{{ comment }}</p>
+
+          {% if user.username == post.author.username %}
+
+          <form id='toggle_comment' method='post' action="{% url 'toggle-comment' post.slug comment.id %}">
+            {% csrf_token %}
+            {% if comment.is_deleted == False %}
+            <input type='submit' value='Trash Comment'/>
+            {% elif comment.is_deleted == True %}
+            <input type='submit' value='Restore Comment'/>
+            {% endif %}
+          </form>
+
+          {% endif %}
+        </div>
+        {% empty %}
+          <p>No comment</p>
+        {% endfor %}
+    </div>
+
+      {% if user.is_authenticated %}
+      <div class='add-comment'>
+        <h6>Add a new comment</h6>
+        <form id="comment_form" action="{% url 'post-detail' post.slug %}" method="POST">
+          {% csrf_token %}
+          {{ comment_form.as_p }}
+          <input type="submit" value="Submit">
+        </form>
+        {% else %}
+        <p><a href="{% url 'login' %}?next={{request.path}}">Login to add comment</a></p>
+        {% endif %}
+      </div>
+  </div> 
+  <script >
+    let commentForm = document.getElementById('comment_form')
+
+    commentForm.onsubmit =  function(form){
+      form.preventDefault();
+      let description = document.getElementById('description').value;
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      
+      let desc = {
+        'description':description}
+      const options = {
+          method: 'POST',
+          body: JSON.stringify(desc),
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken
+          }
+      }
+
+      fetch("{% url 'post-detail' post.slug %}", options)
+      .then(response => response.json())
+      .then(jsonResponse => {
+        console.log("Success:",jsonResponse)
+        const commentBox = document.createElement('div')
+        commentBox.className = 'comment-box'
+
+        const commentMeta = document.createElement('div')
+        const commentAuthor = document.createElement('p')
+        const commentTimestamp = document.createElement('p')
+        const authorText = document.createTextNode(jsonResponse.author)
+        const timestampText = document.createTextNode(jsonResponse.timestamp)
+        commentAuthor.appendChild(authorText)
+        commentTimestamp.appendChild(timestampText)
+
+        commentMeta.appendChild(commentAuthor)
+        commentMeta.appendChild(commentTimestamp)
+
+        commentBox.appendChild(commentMeta)
+
+        commentMeta.className = 'comment-meta'
+        const commentParagraph = document.createElement('p')
+        const commentText = document.createTextNode(jsonResponse.description)
+        commentParagraph.appendChild(commentText)
+        commentBox.appendChild(commentParagraph)
+        
+        const toggleButton = document.createElement('input')
+        toggleButton.setAttribute('type', 'submit')
+        toggleButton.setAttribute('value', 'Trash Comment')
+       
+        
+        commentBox.appendChild(toggleButton)
+
+        document.querySelector('.comment-section').appendChild(commentBox)
+
+        document.getElementById('description').value=''
+
+      })
+      .catch(error=> {
+        console.log("Error:", error)
+      })
+  }
+
+  </script>
+{% endblock %}

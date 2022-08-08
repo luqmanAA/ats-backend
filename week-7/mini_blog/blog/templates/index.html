@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+{% block title %}<title>Blog - Home</title>{% endblock %}
+
+{% block content %}
+  <h1>Blog Home</h1>
+  <p>Welcome to my Blog, a website developed by <em>Luqman</em>!</p>
+  <h4>Blog's Brief:</h4>
+  <ul>
+    <li><strong>Posts:</strong> {{ number_of_posts }}</li>
+    <li><strong>Authors:</strong> {{ number_of_authors }}</li>
+  </ul>
+{% endblock %}

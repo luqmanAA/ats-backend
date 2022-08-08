@@ -1,0 +1,27 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+    <h1>All Blogs</h1>
+    {% if post_list %}
+
+    {% for post in post_list %}
+    <div class='jumbotron'>
+        <h3 class='post-title'><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <p>By 
+            <a href="{% if request.user.id == post.author.id %}
+            {% url 'author-profile' post.author.username %}
+            {% else %}
+            {% url 'author-detail' post.author.id %}
+            {% endif %}"">
+            {{ post.author }}</a> / {{post.get_published_date}}
+        </p>
+        <p>{{ post.get_post_excerpt }} <a href="{{ post.get_absolute_url }}">Read more</a></p>
+    </div>
+    {% endfor %}
+    {% endif %}
+{% endblock %}
+
+<form method='post' action="{% url 'delete-restore-post' post.slug %}">
+    {% csrf_token %}
+    <input type='submit' value='Restore Comment'/>
+</form>
