@@ -39,10 +39,10 @@
 
           <form id='toggle_comment' method='post' action="{% url 'toggle-comment' post.slug comment.id %}">
             {% csrf_token %}
-            {% if comment.is_deleted == False %}
-            <input type='submit' value='Trash Comment'/>
-            {% elif comment.is_deleted == True %}
+            {% if comment.is_deleted %}
             <input type='submit' value='Restore Comment'/>
+            {% else %}
+            <input type='submit' value='Trash Comment'/>
             {% endif %}
           </form>
 

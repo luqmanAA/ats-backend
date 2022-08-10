@@ -28,10 +28,14 @@
             </p>
             <p>{{ post.get_post_excerpt }} <a href="{{ post.get_absolute_url }}">Read more</a></p>
             
+            {% if request.user.id == author_profile.id %}
+            
             <form method='post' action="{% url 'delete-restore-post' post.slug %}">
                 {% csrf_token %}
                 <input type='submit' value='Trash Post'/>
             </form>
+            {% endif %}
+            
         </div>
         {% empty %}
         <div class='jumbotron'>
@@ -39,6 +43,7 @@
         </div>
         {% endfor %}
 
+        {% if request.user.id == author_profile.id %}
         <h5>Deleted Posts</h5>
         {% for post in deleted_post %}
         <div class='jumbotron'>
@@ -58,7 +63,8 @@
         <div class='jumbotron'>
             <h4>Trash is empty</a></h4>
         </div>
-        {% endfor %}  
+        {% endfor %} 
+        {% endif %} 
             
     </div>
 {% endblock %}
