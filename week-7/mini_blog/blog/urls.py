@@ -35,3 +35,6 @@ urlpatterns += [
 # urlpatterns += [
 #     path('blog/<slug:slug>/edit', ),
 # ]
+urlpatterns += [
+    path('account/signup', views.SignUp.as_view(), name='signup')
+]

@@ -9,9 +9,10 @@ from django.utils import formats
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, UpdateView, FormMixin
+from django.views.generic.edit import CreateView, UpdateView, FormMixin, FormView
+from django.contrib.auth import login, authenticate
 
-from .forms import CommentModelForm
+from .forms import CommentModelForm, SignUpForm
 from .models import Author, Comment, Post
 
 # Create your views here.
@@ -184,3 +185,21 @@ class CommentDeleteView(LoginRequiredMixin, View):
         comment.is_deleted = not comment.is_deleted
         comment.save()    
         return HttpResponseRedirect(reverse('post-detail', args=[slug]))
+    
+
+class SignUp(FormView):
+    form_class = SignUpForm
+    template_name = 'registration/signup.html'
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        email = form.cleaned_data.get('email')
+        password = form.cleaned_data.get('password2')
+        user = authenticate(email=email, password=password)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.GET.get('next')
